@@ -1,0 +1,152 @@
+[
+  {
+    "name": "United States Dollar",
+    "code": "USD",
+    "symbol": "$ "
+  },
+  {
+    "name": "Canadian Dollar",
+    "code": "CAD",
+    "symbol": "$ "
+  },
+  {
+    "name": "Euro",
+    "code": "EUR",
+    "symbol": "€ "
+  },
+  {
+    "name": "British Pound",
+    "code": "GBP",
+    "symbol": "£ "
+  },
+  {
+    "name": "Australian Dollar",
+    "code": "AUD",
+    "symbol": "$ "
+  },
+  {
+    "name": "Japanese Yen",
+    "code": "JPY",
+    "symbol": "¥ "
+  },
+  {
+    "name": "Chinese Yuan",
+    "code": "CNY",
+    "symbol": "¥ "
+  },
+  {
+    "name": "Czech Koruna",
+    "code": "CZK",
+    "symbol": "Kč "
+  },
+  {
+    "name": "Danish Krone",
+    "code": "DKK",
+    "symbol": "kr "
+  },
+  {
+    "name": "Hong Kong Dollar",
+    "code": "HKD",
+    "symbol": "$ "
+  },
+  {
+    "name": "Hungarian Forint",
+    "code": "HUF",
+    "symbol": "Ft "
+  },
+  {
+    "name": "Indian Rupee",
+    "code": "INR",
+    "symbol": "₹ "
+  },
+  {
+    "name": "Indonesian Rupiah",
+    "code": "IDR",
+    "symbol": "Rp "
+  },
+  {
+    "name": "Israeli Shekel",
+    "code": "ILS",
+    "symbol": "₪ "
+  },
+  {
+    "name": "Malaysian Ringgit",
+    "code": "MYR",
+    "symbol": "RM "
+  },
+  {
+    "name": "Mexican Peso",
+    "code": "MXN",
+    "symbol": "$ "
+  },
+  {
+    "name": "Moroccan Dirham",
+    "code": "MAD",
+    "symbol": "DH "
+  },
+  {
+    "name": "New Zealand Dollar",
+    "code": "NZD",
+    "symbol": "$ "
+  },
+  {
+    "name": "Norwegian Krone",
+    "code": "NOK",
+    "symbol": "kr "
+  },
+  {
+    "name": "Philippine Peso",
+    "code": "PHP",
+    "symbol": "₱ "
+  },
+  {
+    "name": "Singapore Dollar",
+    "code": "SGD",
+    "symbol": "$ "
+  },
+  {
+    "name": "Vietnamese Dong",
+    "code": "VND",
+    "symbol": "₫ "
+  },
+  {
+    "name": "South African Rand",
+    "code": "ZAR",
+    "symbol": "R "
+  },
+  {
+    "name": "Swedish Krona",
+    "code": "SEK",
+    "symbol": "kr "
+  },
+  {
+    "name": "Franc",
+    "code": "CHF",
+    "symbol": "Swiss "
+  },
+  {
+    "name": "Thai Baht",
+    "code": "THB",
+    "symbol": "฿ "
+  },
+  {
+    "name": "Taiwan New Dollar",
+    "code": "TWD",
+    "symbol": "NT$"
+  },
+  {
+    "name": "Turkish Lira",
+    "code": "TRY",
+    "symbol": "₺ "
+  },
+  {
+    "name": "Polish Zloty",
+    "code": "PLN",
+    "symbol": "zł "
+  },
+  {
+    "name": "Brazilian Real",
+    "code": "BRL",
+    "symbol": "R$"
+  }
+]

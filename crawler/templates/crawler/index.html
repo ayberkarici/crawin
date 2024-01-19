@@ -1,0 +1,129 @@
+{% extends "landing/main.html" %}
+
+{% block stylesheet %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tagify/4.17.9/tagify.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.10/typed.min.js" ></script>
+{% endblock stylesheet %}
+
+{% block content %}
+
+  <div class="row">
+    <div class="col-12 ">
+      <h1 class="mb-3">Etsy Listing Crawler</h1>
+
+      <div class="alert alert-light" role="alert">
+        Etsy'deki ürünleri araştırmak için kullanılır. Ürün linklerini girip araştırma yapabilirsiniz.
+      </div>
+
+      <form id="form" method="POST" class="mb-3">
+        <input class="shop_links w-100" id="shop_links" name='tags' placeholder="Araştırılacak Listinglerin URL'leri" >
+        <button class="mt-3 btn btn-outline-primary" type="submit" >Search <i class="bi bi-binoculars"></i></button>
+      </form>
+    </div>
+
+    <div id="progress-box" class=" col-12 d-flex align-items-center justify-content-center flex-column">
+
+      <div id="done_ui" class="d-none card d-flex justify-content-center align-items-center col-4">
+        <div class="card-header w-100">Crawler Progress Finished</div>
+        <i class=" bi bi-check2-circle" style="font-size:5rem;"></i>
+        <span class="mb-3 h4 fw-bold">Done!</span>
+      </div>
+
+      <div id="fail_ui" class="d-none card d-flex justify-content-center align-items-center col-4">
+        <div class="card-header w-100">Crawler Progress Finished</div>
+        <i class=" bi bi-x-circle" style="font-size:5rem;"></i>
+        <span class="mb-3 h4 fw-bold">Something Went Wrong!</span>
+      </div>
+
+      <div id="processing_ui" class="d-none card  col-4 d-flex align-items-center justify-content-center flex-column">
+        <div class="card-header w-100">Crawler Progress</div>
+        <div class="card-body w-100">
+          <div class="w-100 alert alert-primary" role="alert">
+            <div class="progress">
+              <div class="progress-bar progress-bar-animated progress-bar-striped" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+            </div>
+          </div>
+          <span class="loading_info mt-3"></span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+{% endblock content %}
+
+{% block scripts %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tagify/4.17.9/tagify.min.js" ></script>
+
+  <script>
+    // document ready event
+    document.addEventListener("DOMContentLoaded", function() {
+      
+      // cancel event when form is submited
+      $("#form").on("submit", function(e) {
+        e.preventDefault();
+
+        let shop_links = JSON.parse(document.querySelector("#shop_links").value);
+        for (let i = 0; i < shop_links.length; i++) {
+          shop_links[i] = shop_links[i].value 
+        }
+
+        console.log(shop_links);
+
+        // Hide the form
+        $("#form").hide();
+
+        // Show the progress box
+        $("#processing_ui").removeClass('d-none');
+
+
+        // Make an AJAX call to the server
+        $.ajax({
+          url: "{% url "crawler:process_scrapping" %}",
+          type: "POST",
+          data: {
+            shop_links: shop_links,
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+          },
+          success: function(response) {
+            console.log(response);
+            if (response.status == "success") {
+              $("#processing_ui").addClass('d-none');
+              $("#done_ui").removeClass('d-none');
+            } else {
+              $("#processing_ui").addClass('d-none');
+              $("#fail_ui").removeClass('d-none');
+            }
+          },
+          error: function(xhr) {
+            console.log(xhr);
+            $("#processing_ui").addClass('d-none');
+            $("#fail_ui").removeClass('d-none');
+          }
+        });
+        
+      });
+
+    });
+
+  </script>
+
+  <script>
+    var input = document.querySelector('#shop_links'),
+      // init Tagify script on the above inputs
+    tagify = new Tagify(input, {});
+
+    var typed = new Typed('.loading_info', {
+      strings: ["Mağazalar araştırılıyor...", "Ürünler gözden geçiriliyor...", "Analiz için ürünler kaydediliyor..."],
+      typeSpeed: 50,
+      backSpeed: 40,
+      backDelay: 2500,
+      startDelay: 30,
+      loop: true, 
+    });
+
+  </script>
+  
+{% endblock scripts %}

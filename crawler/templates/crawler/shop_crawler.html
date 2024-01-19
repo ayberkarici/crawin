@@ -1,0 +1,154 @@
+{% extends "landing/main.html" %}
+
+{% block stylesheet %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tagify/4.17.9/tagify.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.10/typed.min.js" ></script>
+{% endblock stylesheet %}
+
+{% block content %}
+
+  <div class="row">
+    <div class="col-12 col-lg-6 mb-3">
+      <h1 class="mb-3">Etsy Shop Crawler</h1>
+
+      <div class="alert alert-light" role="alert">
+        Etsy'deki mağazaların ürünlerini araştırmak için kullanılır. Mağaza linklerini girip araştırma yapabilirsiniz.
+      </div>
+
+      <form id="form" method="POST" class="mb-3">
+        <input class="form-control mb-3 shop_links w-100" id="shop_link" name='shop_link' placeholder="Araştırılacak Mağaza URL'i" >
+        <input class="form-control shop_links w-100" id="shop_page_number" name='shop_page_number' placeholder="Kaç sayfa araştırılacak?" >
+
+        <button class="mt-3 btn btn-outline-primary" type="submit" >Search <i class="bi bi-binoculars" data-bs-toggle="modal" data-bs-target="#exampleModal"></i></button>
+      </form>
+    </div>
+
+    <div class="col-12">
+      <h3 class="mb-3">Daha Önce Araştırılan Paketler</h3>
+
+      <div class="row">
+
+        {% for package in packages %}
+        <div class="col-4">
+          <div class="card">
+            <div class="card-header">
+              <i class="bi bi-archive"></i> Ürün Paketi
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{ package.shop_name }}</h5>
+              <p class="card-text">Bu paket {{ package.products.count }} adet ürün içerir.</p>
+              <a href="{% url 'crawler:export_package_to_excel' package_uuid=package.uuid %}" class="btn btn-primary"><i class="bi bi-download"></i>  Excel olarak indir</a>
+            </div>
+          </div>    
+        </div>
+        {% endfor %}
+
+      </div>
+    </div>
+
+        <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Info</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="progress-box" class=" col-12 d-flex align-items-center justify-content-center flex-column">
+
+              <div id="done_ui" class="d-none col-12">
+                <div class="card-header w-100">Crawler Progress Finished</div>
+                <i class=" bi bi-check2-circle" style="font-size:5rem;"></i>
+                <span class="mb-3 h4 fw-bold">Done!</span>
+              </div>
+        
+              <div id="fail_ui" class="d-none card d-flex justify-content-center align-items-center col-4">
+                <div class="card-header w-100">Crawler Progress Finished</div>
+                <i class=" bi bi-x-circle" style="font-size:5rem;"></i>
+                <span id="error_message" class="m-3 h4 fw-bold">Something Went Wrong!</span>
+              </div>
+        
+              <div id="processing_ui" class="d-none col-12 d-flex align-items-center justify-content-center flex-column">
+                <div class="card-header w-100">Crawler Progress</div>
+                <div class="card-body w-100">
+                  <div class="w-100 alert alert-primary" role="alert">
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-animated progress-bar-striped" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                    </div>
+                  </div>
+                  <span class="loading_info mt-3"></span>
+                </div>
+              </div>
+        
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="modal_dismiss" type="button" class="btn btn-secondary" disabled data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+{% endblock content %}
+
+{% block scripts %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tagify/4.17.9/tagify.min.js" ></script>
+
+  <script>
+    // document ready event
+    document.addEventListener("DOMContentLoaded", function() {
+      
+      // cancel event when form is submited
+      $("#form").on("submit", function(e) {
+        e.preventDefault();
+
+        let shop_link = document.querySelector("#shop_link").value;
+        let shop_page_number = document.querySelector("#shop_page_number").value;
+        
+        console.log(shop_link, shop_page_number);
+
+        // Hide the form
+        $("#form").hide();
+
+        // Show the progress box
+        $("#processing_ui").removeClass('d-none');
+
+        // Make an AJAX call to the server
+        $.ajax({
+          url: "{% url "crawler:process_shop_scrapping" %}",
+          type: "POST",
+          data: {
+            shop_link: shop_link,
+            shop_page_number: shop_page_number,
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+          },
+          success: function(response) {
+            console.log(response);
+            if (response.status == "success") {
+              $("#processing_ui").addClass('d-none');
+              $("#done_ui").removeClass('d-none');
+              $("#modal_dismiss").removeAttr('disabled');
+            } else {
+              $("#processing_ui").addClass('d-none');
+              $("#fail_ui").removeClass('d-none');
+              $("#error_message").text(response.message);
+              $("#modal_dismiss").removeAttr('disabled');
+            }
+          },
+          error: function(xhr) {
+            console.log(xhr);
+            $("#processing_ui").addClass('d-none');
+            $("#fail_ui").removeClass('d-none');
+            $("#error_message").text(response.message); 
+            $("#modal_dismiss").removeAttr('disabled');
+          }
+        });
+      });
+    });
+  </script>
+
+{% endblock scripts %}
